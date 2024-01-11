@@ -1,0 +1,32 @@
+---
+title: "RMarkdown Practice"
+author: "Jasmine Hsiao"
+date: "2024-01-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Title 
+### Title 
+#### Title 
+_Title_  
+**Title**
+
+The fat cat crossed  
+the road.
+
+[Google](https://www.google.com/)
+
+
+```{r}
+#install.packages("tidyverse")
+library("tidyverse")
+```
+
+```{r}
+ggplot(mtcars, aes(x = factor(cyl))) +
+    geom_bar()
+```
