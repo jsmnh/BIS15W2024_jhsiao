@@ -1,7 +1,7 @@
 ---
 title: "Lab 1 Homework"
 author: "Jasmine Hsiao"
-date: "2024-01-11"
+date: "2024-01-12"
 output:
   html_document: 
     theme: spacelab
