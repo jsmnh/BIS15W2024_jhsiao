@@ -6,8 +6,8 @@ Instructor: [Dr. Joel Ledford](mailto:jmledford@ucdavis.edu))
 TA: [Bry Moore](mailto:brymoore@ucdavis.edu)
 
 ## About me
-Contact info: [Jasmine Hsiao](mailto:hsyhsiao@ucdavis.edu) 
+Contact info: [Jasmine Hsiao](mailto:hsyhsiao@ucdavis.edu)  
 Major: Biotechnology - bioinformatics
 
 ## Thank You!
-😁🫡🌱
+🌱😁🫡
