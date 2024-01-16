@@ -14,10 +14,10 @@ Answer the following questions and complete the exercises in RMarkdown. Please e
 Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
 
 1. What is a vector in R?  
-A vector is a common way of organizing data in R. 
+A vector is a common way of organizing data in R. (use command c) 
 
 2. What is a data matrix in R?  
-A data matrix is like a data table, it is a series of stacked vectors. 
+A data matrix is like a data table, it is a series of stacked vectors. (use matrix command)
 
 3. Below are data collected by three scientists (Jill, Steve, Susan in order) measuring temperatures of eight hot springs. Run this code chunk to create the vectors.  
 ```{r}
@@ -32,7 +32,24 @@ spring_8 <- c(36.80, 36.45, 33.15)
 ```
 
 4. Build a data matrix that has the springs as rows and the columns as scientists.  
+```{r}
+spring <- c(spring_1, spring_2, spring_3, spring_4, spring_5, spring_6, spring_7, spring_8)
+spring
+```
 
+```{r}
+spring_matrix <- matrix(spring, nrow = 8, byrow = T)
+spring_matrix
+```
+
+```{r}
+scientists <- c("Jill", "Steve", "Susan")
+scientists
+```
+```{r}
+colnames(spring_matrix) <- scientists
+spring_matrix
+```
 
 5. The names of the springs are 1.Bluebell Spring, 2.Opal Spring, 3.Riverside Spring, 4.Too Hot Spring, 5.Mystery Spring, 6.Emerald Spring, 7.Black Spring, 8.Pearl Spring. Name the rows and columns in the data matrix. Start by making two new vectors with the names, then use `colnames()` and `rownames()` to name the columns and rows.
 
