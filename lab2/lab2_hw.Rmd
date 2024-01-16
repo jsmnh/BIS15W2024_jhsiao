@@ -14,10 +14,10 @@ Answer the following questions and complete the exercises in RMarkdown. Please e
 Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
 
 1. What is a vector in R?  
-
+A vector is a common way of organizing data in R. 
 
 2. What is a data matrix in R?  
-
+A data matrix is like a data table, it is a series of stacked vectors. 
 
 3. Below are data collected by three scientists (Jill, Steve, Susan in order) measuring temperatures of eight hot springs. Run this code chunk to create the vectors.  
 ```{r}
