@@ -393,8 +393,8 @@ header above.</p>
 report neat and clean!</p>
 <ol style="list-style-type: decimal">
 <li><p>What is a vector in R?<br />
-A vector is a common way of organizing data in R. (use command
-c)</p></li>
+A vector is a common way of organizing data in R and it is a list of
+data that are the same type. (use command c)</p></li>
 <li><p>What is a data matrix in R?<br />
 A data matrix is like a data table, it is a series of stacked vectors.
 (use matrix command)</p></li>
@@ -449,7 +449,7 @@ spring_names</code></pre>
 <pre><code>## [1] &quot;Bluebell Spring&quot;  &quot;Opal Spring&quot;      &quot;Riverside Spring&quot; &quot;Too Hot Spring&quot;  
 ## [5] &quot;Mystery Spring&quot;   &quot;Emerald Spring&quot;   &quot;Black Spring&quot;     &quot;Pearl Spring&quot;</code></pre>
 <pre class="r"><code>rownames(spring_matrix) &lt;- spring_names</code></pre>
-<p>The actual matrix visualized:</p>
+<p>The actual matrix</p>
 <pre class="r"><code>spring_matrix</code></pre>
 <pre><code>##                   Jill Steve Susan
 ## Bluebell Spring  36.25 35.40 35.30
@@ -503,8 +503,10 @@ Jill</code></pre>
 <li>Use the data matrix to perform one calculation or operation of your
 interest.</li>
 </ol>
-<pre class="r"><code>all_spring_matrix[5,4]</code></pre>
-<pre><code>## [1] 30.85</code></pre>
+<pre class="r"><code>avg_scientist &lt;- colMeans(spring_matrix)
+avg_scientist</code></pre>
+<pre><code>##     Jill    Steve    Susan 
+## 34.19375 33.93125 32.68750</code></pre>
 </div>
 <div id="push-your-final-code-to-github" class="section level2">
 <h2>Push your final code to GitHub!</h2>
