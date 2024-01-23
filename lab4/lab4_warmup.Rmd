@@ -1,0 +1,58 @@
+---
+title: "lab_4_warm_up"
+author: "Jasmine Hsiao"
+date: "2024-01-23"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Load the libraries (tidyverse and palmerpenguins)
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r}
+penguins
+```
+
+## 2. Dimensions 
+```{r}
+dim(penguins)
+```
+
+## 3. Names of variables(columns)
+```{r}
+names(penguins)
+```
+
+```{r}
+glimpse(penguins)
+```
+
+## How many individuals sampled on each island
+```{r}
+penguins <- penguins #see the data
+```
+
+```{r}
+table(penguins$island)
+```
+```{r}
+penguins$island #not very helpful
+```
+```{r}
+summary(penguins$island) #clean as well. 
+```
+
+
+## Mean body mass for all individuals
+```{r}
+mean(penguins$body_mass_g, na.rm = T)
+```
+
