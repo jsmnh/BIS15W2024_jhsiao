@@ -35,6 +35,7 @@ dim(sleep)
 ```
 
 4. Are there any NAs in the data? How did you determine this? Please show your code.  
+Yes, there are NAs in the data. We can see this through the summary function, which shows the number of NAs in each category. 
 ```{r}
 summary(sleep)
 ```
@@ -51,10 +52,10 @@ table(sleep$vore)
 
 7. We are interested in two groups; small and large mammals. Let's define small as less than or equal to 19kg body weight and large as greater than or equal to 200kg body weight. Make two new dataframes (large and small) based on these parameters.
 ```{r}
-large_mammals <- filter(sleep, bodywt<=19) 
+large_mammals <- filter(sleep, bodywt>=200) 
 large_mammals
 
-small_mammals <- filter(sleep, bodywt>=200)
+small_mammals <- filter(sleep, bodywt<=19)
 small_mammals 
 ```
 
@@ -69,6 +70,7 @@ mean(large_mammals$bodywt)
 ```
 
 9. Using a similar approach as above, do large or small animals sleep longer on average?  
+Small animals sleep longer on average. 
 ```{r}
 mean(small_mammals$sleep_total)
 ```
@@ -76,9 +78,10 @@ mean(small_mammals$sleep_total)
 ```{r}
 mean(large_mammals$sleep_total)
 ```
-Large animals sleep longer on average. 
+
 
 10. Which animal is the sleepiest among the entire dataframe?
+Little brown bat is the sleepiest. 
 ```{r}
 max(sleep$sleep_total)
 filter(sleep,sleep_total==19.9)
