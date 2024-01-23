@@ -22,7 +22,9 @@ library("jpeg")
 ## Review from last time
 ### *With a partner, discuss the following questions*
 1. What is a data frame and how is it different than a data matrix?  
+Visually, dataframe look better. 
 2. What is the command we use to import .csv files into R?  
+read.csv
 3. Take a moment to show your repository on GitHub to a partner. Can you make any improvements?  
 
 ## Warm-up
