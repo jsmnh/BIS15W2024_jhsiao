@@ -117,9 +117,9 @@ filter(owls, mean_mass_g ==61.32)
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
 homerange %>% 
-  select("taxon", "common_name", "mean_hra_m2") %>% 
+  select(taxon, common_name, mean_hra_m2) %>% 
   filter(taxon == "birds") %>% 
-  arrange("mean_hra_mr2")
+  arrange(desc(mean_hra_m2))
 ```
 
 ## Push your final code to GitHub!
