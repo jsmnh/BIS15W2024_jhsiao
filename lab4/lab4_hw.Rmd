@@ -115,6 +115,7 @@ filter(owls, mean_mass_g ==61.32)
 ```
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
+Caracara is the largest homerange. It is a falcon that is characterized by long legs and medium size. 
 ```{r}
 homerange %>% 
   select(taxon, common_name, mean_hra_m2) %>% 
