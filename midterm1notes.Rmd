@@ -1,0 +1,323 @@
+---
+title: "Midterm1Notes"
+author: "Jasmine Hsiao"
+date: "2024-02-05"
+output: 
+  html_document: 
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Lab 1-"R, RStudio, and RMarkdown"
+## Working Directory 
+```{r}
+getwd()
+```
+
+## Load the tidyverse
+```{r}
+library("tidyverse") 
+```
+
+
+# Lab 2.1-"Objects, Classes & NAs"
+## Objects
+```{r}
+x <- 42 # the object 'x' 'gets' 42 
+```
+
+## Types of Data
+Five frequently used `classes` of data: 1. numeric, 2. integer, 3. character, 4. logical, 5. complex.
+```{r}
+my_numeric <- 2
+class(my_numeric) # To find the class of data
+```
+
+Use `is()` and `as()` functions to clarify or specify a type of data.
+```{r}
+is.integer(my_numeric) #is my_numeric an integer?
+```
+
+```{r}
+my_integer <- as.integer(my_numeric) #create new object specified as an integer
+```
+
+## Missing Data
+Functions to deal with NAs
+```{r}
+my_missing <- NA
+```
+
+```{r}
+is.na(my_missing) # Asks if my_missing is NA
+```
+
+```{r}
+anyNA(my_missing) # Asks if theres any NA
+```
+
+```{r}
+new_vector <- c(10, 20, 30, NA)
+mean(new_vector, na.rm=T) #removes the NA  in the vector. T = true, so it would be removed. 
+```
+
+# lab 2.2-"Vectors and Data Matrices"
+## Vectors 
+The `c` stands for concatenate, to create vectors
+```{r}
+my_vector <- c(10, 20, 30) # numeric vector
+```
+
+```{r}
+days_of_the_week <- c("Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday") # character vector
+```
+
+```{r}
+my_vector_sequence <- c(1:100) # generate sequence of numbers
+my_vector_sequence
+```
+
+```{r}
+my_vector_sequence[15] # Evalulate numeric in vector
+```
+
+## Data matrices
+```{r}
+Philosophers_Stone <- c(317.5, 657.1) # seperate vectors
+Chamber_of_Secrets <- c(261.9, 616.9)
+Prisoner_of_Azkaban <- c(249.5, 547.1)
+Goblet_of_Fire <- c(290.0, 606.8)
+Order_of_the_Phoenix <- c(292.0, 647.8)
+Half_Blood_Prince <- c(301.9, 632.4)
+Deathly_Hallows_1 <- c(295.9, 664.3)
+Deathly_Hallows_2 <- c(381.0, 960.5)
+```
+
+```{r}
+box_office <- c(Philosophers_Stone, Chamber_of_Secrets, Prisoner_of_Azkaban, Goblet_of_Fire, Order_of_the_Phoenix, Half_Blood_Prince, Deathly_Hallows_1, Deathly_Hallows_2)
+box_office # New object called box_office
+```
+
+```{r}
+harry_potter_matrix <- matrix(box_office, nrow = 8, byrow = T)
+harry_potter_matrix # Creates a matrix
+```
+
+## Name the rows and columns
+```{r}
+region <- c("US", "non-US")
+region
+```
+
+```{r}
+titles <- c("Philosophers_Stone", "Chamber_of_Secrets", "Prisoner_of_Azkaban", "Goblet_of_Fire", "Order_of_the_Phoenix", "Half_Blood_Prince", "Deathly_Hallows_1", "Deathly_Hallows_2")
+titles
+```
+
+```{r}
+colnames(harry_potter_matrix) <- region # name column with vector 'region'
+```
+
+```{r}
+rownames(harry_potter_matrix) <- titles # name rows with vector 'title'
+```
+
+```{r}
+harry_potter_matrix # print matrix
+```
+
+## Using a data matrix
+```{r}
+global <- rowSums(harry_potter_matrix) # calculate total earnings
+global
+```
+
+```{r}
+all_harry_potter_matrix <- cbind(harry_potter_matrix, global)
+all_harry_potter_matrix # Add new columns
+```
+
+```{r}
+harry_potter_matrix[2,1] # selects the value in the first column, second row.
+``` 
+
+```{r}
+harry_potter_matrix[1:4] #`:` selects the specified elements in a column. 
+```
+
+```{r}
+non_us_earnings <- all_harry_potter_matrix[ ,2] #select values in an entire row or column, calculate mean of entire second column
+mean(non_us_earnings)
+```
+
+# Lab 3.1-"Data Frames"
+## Data Frames
+Another type of data structure, similar to spreadsheet. Cleaner and neat looking than matrix.  
+```{r}
+Sex <- c("male", "female", "male") # Build seperate vectors
+Length <- c(3.2, 3.7, 3.4)
+Weight <- c(2.9, 4.0, 3.1)
+```
+
+```{r}
+hbirds <- data.frame(Sex, Length, Weight) # Combine vectors to create data frame
+hbirds
+```
+
+```{r}
+names(hbirds) # Column names of data frame
+```
+
+```{r}
+dim(hbirds) # Dimensions of hbirds
+```
+
+```{r}
+str(hbirds) # Dimensions of hbirds
+```
+
+```{r}
+hbirds <- data.frame(sex=Sex, length=Length, weight_g=Weight)
+hbirds # Change names from uppercase to lowercase, When you say hbird gets data.frame, it overwrites everything
+```
+
+```{r}
+hbirds[1,] # select first row
+```
+
+```{r}
+hbirds[ ,3] # select third column
+```
+
+```{r}
+mean(hbirds$weight_g) # select values in entire column using '$', useful for calculating means
+```
+
+## Adding Rows
+```{r}
+new_bird <- c("female", 3.6, 3.9)
+new_bird
+```
+
+```{r}
+hbirds<- rbind(hbirds, new_bird) # Add a new bird's data with 'rbind()' meaning row bind
+hbirds
+```
+
+## Adding Columns
+```{r}
+hbirds$neighborhood <- c("lakewood", "brentwood", "lakewood", "scenic Heights")
+hbirds # Add column into our data with '$'
+```
+
+## Writing Data to File
+Save our hbirds data frame to use it again later. Here we write our data frame to a csv file. We use `row.names = FALSE` to avoid row numbers from printing out. 
+```{r}
+write.csv(hbirds, "hbirds_data.csv", row.names = FALSE)
+```
+
+# Lab 3.2-"Importing Data Frames"
+## Load the tidyverse
+```{r}
+library("tidyverse")
+```
+
+```{r}
+getwd() 
+```
+
+## Load the data
+```{r}
+hot_springs <- read_csv("lab3/hsprings_data.csv")
+```
+
+```{r}
+str(hot_springs) # Get an idea of data structure
+```
+
+```{r}
+class(hot_springs$scientist) 
+class(hot_springs$spring) # shows the classes of both
+```
+
+```{r}
+hot_springs$scientist <- as.factor(hot_springs$scientist)
+hot_springs$spring <- as.factor(hot_springs$spring) # Makes both factors
+```
+
+```{r}
+levels(hot_springs$scientist) 
+levels(hot_springs$spring) # Shows levels of the factors
+```
+
+## Summary functions
+```{r}
+fish <- read_csv("lab3/data/Gaeta_etal_CLC_data.csv")
+```
+
+```{r}
+summary(fish) # summarize data frame
+```
+
+```{r}
+glimpse(fish) # Another summary function
+```
+
+```{r}
+nrow(fish) # Gives number of rows
+```
+
+```{r}
+ncol(fish) # Gives number of columns
+```
+
+```{r}
+dim(fish) # Gives dimensions
+```
+
+```{r}
+names(fish) #Gives column names
+```
+
+```{r}
+head(fish) # Prints the first n rows of the data frame
+```
+
+```{r}
+tail(fish) # Prints the last n rows of the data frame
+```
+
+```{r}
+table(fish$lakeid) # Useful when have limited num of categorical variables, produces fast counts of number of observations in a variable
+```
+
+```{r}
+# View(fish)
+# click on the `fish` data frame in the Environment tab or type this
+```
+
+```{r}
+little_fish <- filter(fish, length<=100)
+little_fish # Filter allows us to pull out observations with specific criteria
+```
+
+# Lab 4.1-"Transforming data 1: Dplyr `select()`"
+## Load the tidyverse
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+```
+
+## Load the data
+```{r}
+fish <- readr::read_csv("lab4/data/Gaeta_etal_CLC_data.csv") ##readr is just being explicit on the package used
+```
+
+## Data Structure
+```{r}
+glimpse(fish) # structure
+summary(fish) # contents
+dim(fish) # Dimensions
+```
