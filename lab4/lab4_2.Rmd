@@ -41,7 +41,7 @@ mammals <- rename(mammals, genus=Genus, wean_mass="wean mass", max_life="max. li
 ## `filter()`
 Unlike `select()`, `filter()` allows us to extract data that meet specific criteria within a variable. Let's say that we are interested only in the fish that occur in lake "AL". We can use `filter()` to extract these observations.  
 ```{r}
-filter(fish, lakeid == "AL") # use ==, use "", using select is bad practice
+filter(fish, lakeid == "AL") # use == "", using select is bad practice
 ```
 
 Similarly, if we are only interested in fish with a length greater than or equal to 350 we can use `filter()` to extract these observations.  

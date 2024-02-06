@@ -231,8 +231,9 @@ getwd()
 
 ## Load the data
 ```{r}
-hot_springs <- read_csv("lab3/hsprings_data.csv")
+hot_springs <- read_csv("data_midterm1/hsprings_data.csv")
 ```
+
 
 ```{r}
 str(hot_springs) # Get an idea of data structure
@@ -255,7 +256,7 @@ levels(hot_springs$spring) # Shows levels of the factors
 
 ## Summary functions
 ```{r}
-fish <- read_csv("lab3/data/Gaeta_etal_CLC_data.csv")
+fish <- read_csv("data_midterm1/Gaeta_etal_CLC_data.csv")
 ```
 
 ```{r}
@@ -312,7 +313,7 @@ library("tidyverse")
 
 ## Load the data
 ```{r}
-fish <- readr::read_csv("lab4/data/Gaeta_etal_CLC_data.csv") ##readr is just being explicit on the package used
+fish <- readr::read_csv("data_midterm1/Gaeta_etal_CLC_data.csv") ##readr is just being explicit on the package used
 ```
 
 ## Data Structure
@@ -321,3 +322,397 @@ glimpse(fish) # structure
 summary(fish) # contents
 dim(fish) # Dimensions
 ```
+
+## dplyr
+`dplyr` is a package part of the tidyverse, used to transform data frames by extracting, rearranging, and summarizing data such that they are focused on a question of interest.
+
+## `select()`
+```{r}
+names(fish) 
+```
+
+```{r}
+select(fish, "lakeid", "scalelength") # Pull out column of interest, order matters
+```
+
+```{r}
+select(fish, fish_id:length) #gives the columns in between, range of columns
+```
+
+```{r}
+select(fish, -"fish_id", -"annnumber", -"length", -"radii_length_mm") # Columns except those (-)
+```
+
+```{r}
+select(fish, contains("length")) #pull out all data with length
+```
+
+```{r}
+select(fish, starts_with("radii")) #pull out all variable starts with
+```
+
+```{r}
+select(fish, ends_with("id"))
+```
+Options to select columns based on a specific criteria include:  
+1. ends_with() = Select columns that end with a character string  
+2. contains() = Select columns that contain a character string  
+3. matches() = Select columns that match a regular expression  
+4. one_of() = Select columns names that are from a group of names 
+
+```{r}
+select(fish, matches("a.+er")) # look at variables of interest
+```
+
+Select columns based on class of data:
+```{r}
+select_if(fish, is.numeric) #pull out all numerics
+```
+
+Select all columns that are *not* a class of data, you need to add a `~`.:
+```{r}
+select_if(fish, ~!is.numeric(.)) #select if in fish data, look across all variables dont select numeric(!)
+#! means not
+```
+
+## Others
+Load data
+```{r}
+mammals <- read.csv("data_midterm1/mammal_lifehistories_v2.csv")
+```
+
+Imported data frames often have a mix of lower and uppercase column names. Use `toupper()` or `tolower()` to fix this issue. (Lower case is more consistent)
+```{r}
+select_all(mammals, tolower) #fix all the lower case
+```
+
+```{r}
+library(janitor)
+names(mammals)
+```
+
+```{r}
+mammals <- clean_names(mammals) # Cleans variable names
+```
+
+When naming columns, blank spaces are often added (don't do this, please). Here is a trick to remove these.  
+```{r}
+#select_all(mammals, ~str_replace(., " ", "_"))
+```
+
+# Lab 4.2-"Transforming data 2: `filter()`"
+## `filter()`
+Allows us to extract data that meet specific criteria in a variable.
+
++ `filter()` allows all of the expected operators; i.e. >, >=, <, <=, != (not equal), and == (equal).  
+```{r}
+filter(fish, lakeid == "AL") # use == "", using select is bad practice
+```
+
+```{r}
+filter(fish, length >= 350) # If only interested in fish length greater
+```
+
+```{r}
+not_AL <- filter(fish, lakeid != "AL") #! means not
+```
+
+## Using `filter()` with multiple observations 
+```{r}
+filter(fish, length %in% c(167, 175)) # filter multiple values within same variable
+```
+
+```{r}
+filter(fish, between(scalelength, 2.5, 2.55)) # For range of specific values
+```
+
+```{r}
+filter(fish, near(radii_length_mm, 2, tol = 0.2)) #look for radii length near 2, but within 0.2 tolerance
+```
+
+## Using `filter()` on multiple conditions
+```{r}
+filter(fish, lakeid == "AL" & length > 350) # AND
+```
+
+```{r}
+filter(fish, lakeid == "AL" | length > 350) # OR
+```
+
+```{r}
+filter(fish, length > 400, (scalelength > 11 | radii_length_mm > 8)) # Can also nest to be more specific
+```
+
+Rules:  
++ `filter(condition1, condition2)` will return rows where both conditions are met.  
++ `filter(condition1, !condition2)` will return all rows where condition one is true but condition 2 is not.  
++ `filter(condition1 | condition2)` will return rows where condition 1 or condition 2 is met.  
++ `filter(xor(condition1, condition2)` will return all rows where only one of the conditions is met, and not when both conditions are met.
+
+# Lab 5.2-"Pipes, `arrange()`
+## Pipes `%>%` 
+Combines select and filter. 
+```{r}
+fish %>% #pipe, use fish data
+  select(lakeid, scalelength) %>% #select lakeid and scalelength and use the output of that function
+  filter(lakeid == "AL") #to filter out observation of interest (lake AL)
+```
+
+```{r}
+mammals %>% 
+  select(family, genus, species, gestation) %>% 
+  filter(gestation>=15)
+```
+
+## `arrange()`
+```{r}
+fish %>% 
+  select(lakeid, scalelength) %>% 
+  arrange(scalelength) # like a sort command in excel, default is ascending order
+```
+
+```{r}
+fish %>% 
+  select(lakeid, scalelength) %>% 
+  arrange(desc(scalelength)) # To sort in decreasing order
+```
+
+# Lab 6.1-"`mutate()`, and `if_else()`"
+## `mutate()` 
+```{r}
+fish %>% 
+  mutate(length_mm = length*10) %>%  #Create a new column from existing columns
+  select(fish_id, length, length_mm)
+```
+
+## `mutate_all()`
+```{r}
+mammals %>%
+  mutate_all(tolower) # Helpful when cleaning data, changes all entires to lowercase
+```
+
+```{r}
+mammals %>% 
+  mutate(across(c("order", "family"), tolower)) # Using across function to specify individual columns
+```
+
+## `if_else()` 
+Allows us to use `mutate()` but not have the entire column affected in the same way.
+First specify a logical statement, afterwards what needs to happen if the statement returns `TRUE`, and lastly what needs to happen if it's  `FALSE`.  
+```{r}
+mammals %>% 
+  select(genus, species, newborn) %>%
+  mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%>% 
+  arrange(newborn) # Replaces -999 with NA, if anything else it keeps newborn value
+```
+
+# Lab 6.2-"dplyr Superhero"
+## `tabyl`
+Produces counts and percentages, like `table`
+```{r}
+#tabyl(superhero_info, alignment)
+```
+
+# Lab 7.1-"`summarize()` and `group_by()`"
+## Load the tidyverse and janitor
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+```
+
+## Install `skimr`
+```{r}
+#install.packages("skimr")
+library("skimr")
+```
+
+## Load the data
+Built-in data on mammal sleep patterns and palmerpenguins
+```{r}
+?msleep #? infront of data set gives info on builtin dataset, part of ggplot2, and is all part of tidyverse
+names(msleep)
+```
+
+```{r}
+library("palmerpenguins")
+```
+
+## dplyr Practice
+```{r}
+msleep24 <- msleep %>% 
+  select(name, vore, sleep_total) %>% 
+  mutate(sleep_total_24 = sleep_total/24) %>% 
+  filter(sleep_total_24<=0.3) %>% 
+  arrange(desc(sleep_total_24))
+```
+
+```{r}
+summary(msleep24) #can see the min and max
+```
+
+```{r}
+skim(msleep24) #tells no missing data, complete data, gives quartiles, and histogram 
+# part of the `skimr` package
+```
+
+```{r}
+hist(msleep24$sleep_total_24) #gives histogram
+```
+
+## `summarize()`
+Produce summary statistics for a given variable in a data frame.
+```{r}
+msleep %>% 
+  filter(bodywt>200) %>% 
+  summarize(mean_sleep_lg=mean(sleep_total))
+```
+Same as:
+```{r}
+large <- msleep %>% 
+  select(name, genus, bodywt, sleep_total) %>% 
+  filter(bodywt > 200) %>% 
+  arrange(desc(bodywt))
+large
+```
+```{r}
+mean(large$sleep_total)
+```
+
+```{r}
+msleep %>% 
+  filter(bodywt>200) %>% 
+  summarize(mean_sleep_lg=mean(sleep_total),
+            min_sleep_lg=min(sleep_total),
+            max_sleep_lg=max(sleep_total),
+            sd_sleep_lg=sd(sleep_total),
+            total=n()) #total tells you the number of rows, 7 animals
+```
+
+## `n_distinct()`
+A way of cleanly presenting the number of distinct observations. 
+```{r}
+msleep %>% 
+  summarize(n_genera=n_distinct(genus)) #This is going to count the number of genera in msleep
+```
+
+```{r}
+glimpse(msleep) #reality check, we can see the number of rows decreased, meaning they were grouped together
+```
+
+## `group_by()`
+`summarize()` function is most useful when used in conjunction with `group_by()`
+```{r}
+msleep %>%
+  group_by(vore) %>% #we are grouping by feeding ecology, a categorical variable
+  summarize(min_bodywt = min(bodywt),
+            max_bodywt = max(bodywt),
+            mean_bodywt = mean(bodywt),
+            total=n())
+```
+
+`na.rm=TRUE` to remove NA
+```{r}
+msleep %>%
+  group_by(order) %>% 
+  summarize(mean_brainwt = mean(brainwt, na.rm=TRUE)) #we fixed the problem but theres NaN
+```
+
+# Lab 7.2-"summarize practice, `count()`, `across()`"
+NAs in data
+```{r}
+penguins %>% 
+  group_by(island) %>% #group by only works with categorical variable 
+  summarize(number_NAs = sum(is.na(body_mass_g))) ##the one NA values screw up the calculations
+```
+
+Remove the NAs and recalculate.
+```{r}
+penguins %>% 
+  filter(!is.na(body_mass_g)) %>%  #Pull out all of the observations with a number, leave others w/ NA behind
+  group_by(island) %>% 
+  summarize(mean_weight=mean(body_mass_g))
+```
+
+If interested in the number of observations (penguins) by species and island?
+```{r}
+penguins %>% 
+  group_by(species, island) %>% 
+  summarize(n=n(), .groups= 'keep')#the .groups argument here just prevents a warning message
+```
+
+## Counts
+`count()` is an easy way of determining how many observations you have within a column. It acts like a combination of `group_by()` and `n()`.
+```{r}
+penguins %>% 
+  count(island, sort = T) #sort=T sorts the column in descending order
+```
+same as:
+```{r}
+penguins %>% 
+  group_by(island) %>% 
+  summarize(n=n())
+```
+
+You can also use `count()` across multiple variables.
+```{r}
+penguins %>% 
+  count(island, species, sort = T) # sort=T will arrange in descending order
+```
+
+`tabyl()` also gives counts
+```{r}
+penguins %>% 
+  tabyl(island, species)
+```
+
+## `across()`
+Its like `filter()` and `select()` across multiple variables
+```{r}
+penguins %>%
+  summarize(across(c(species, island, sex), n_distinct))
+```
+Same as:
+```{r}
+penguins %>%
+  summarize(distinct_species = n_distinct(species),
+            distinct_island = n_distinct(island),
+            distinct_sex = n_distinct(sex))
+```
+
+Helpful for continuous variables.
+```{r}
+penguins %>%
+  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+```{r}
+penguins %>%
+  summarize(across(contains("mm"), \(x) mean(x, na.rm = TRUE))) #use this to correct the error above
+```
+
+`group_by` also works.
+```{r}
+penguins %>%
+  group_by(sex) %>% 
+  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+Here we summarize across all variables.
+```{r}
+penguins %>%
+  summarise_all(mean, na.rm=T)
+```
+
+Operators can also work, here I am summarizing across all variables except `species`, `island`, `sex`, and `year`.
+```{r}
+penguins %>%
+  summarise(across(!c(species, island, sex, year), 
+                  mean, na.rm=T))
+```
+
+All variables that include "bill"...all of the other dplyr operators also work.
+```{r}
+penguins %>%
+  summarise(across(starts_with("bill"), mean, na.rm=T))
+```
+
