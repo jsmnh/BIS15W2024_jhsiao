@@ -15941,19 +15941,19 @@ conjunction with <code>group_by()</code></p>
 ## 2 Dream           3713.
 ## 3 Torgersen       3706.</code></pre>
 <p>If interested in the number of observations (penguins) by species and
-island?</p>
+island.</p>
 <pre class="r"><code>penguins %&gt;% 
-  group_by(species, island) %&gt;% 
-  summarize(n=n(), .groups= &#39;keep&#39;)#the .groups argument here just prevents a warning message</code></pre>
+  group_by(species, island) %&gt;% # Group by species and island, and get number of species by those. 
+  summarize(number_of_penguins=n(), .groups= &#39;keep&#39;)#the .groups argument here just prevents a warning message</code></pre>
 <pre><code>## # A tibble: 5 × 3
 ## # Groups:   species, island [5]
-##   species   island        n
-##   &lt;fct&gt;     &lt;fct&gt;     &lt;int&gt;
-## 1 Adelie    Biscoe       44
-## 2 Adelie    Dream        56
-## 3 Adelie    Torgersen    52
-## 4 Chinstrap Dream        68
-## 5 Gentoo    Biscoe      124</code></pre>
+##   species   island    number_of_penguins
+##   &lt;fct&gt;     &lt;fct&gt;                  &lt;int&gt;
+## 1 Adelie    Biscoe                    44
+## 2 Adelie    Dream                     56
+## 3 Adelie    Torgersen                 52
+## 4 Chinstrap Dream                     68
+## 5 Gentoo    Biscoe                   124</code></pre>
 <div id="counts" class="section level2">
 <h2>Counts</h2>
 <p><code>count()</code> is an easy way of determining how many

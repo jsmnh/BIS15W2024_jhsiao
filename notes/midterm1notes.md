@@ -16112,24 +16112,24 @@ penguins %>%
 ## 3 Torgersen       3706.
 ```
 
-If interested in the number of observations (penguins) by species and island?
+If interested in the number of observations (penguins) by species and island. 
 
 ```r
 penguins %>% 
-  group_by(species, island) %>% 
-  summarize(n=n(), .groups= 'keep')#the .groups argument here just prevents a warning message
+  group_by(species, island) %>% # Group by species and island, and get number of species by those. 
+  summarize(number_of_penguins=n(), .groups= 'keep')#the .groups argument here just prevents a warning message
 ```
 
 ```
 ## # A tibble: 5 × 3
 ## # Groups:   species, island [5]
-##   species   island        n
-##   <fct>     <fct>     <int>
-## 1 Adelie    Biscoe       44
-## 2 Adelie    Dream        56
-## 3 Adelie    Torgersen    52
-## 4 Chinstrap Dream        68
-## 5 Gentoo    Biscoe      124
+##   species   island    number_of_penguins
+##   <fct>     <fct>                  <int>
+## 1 Adelie    Biscoe                    44
+## 2 Adelie    Dream                     56
+## 3 Adelie    Torgersen                 52
+## 4 Chinstrap Dream                     68
+## 5 Gentoo    Biscoe                   124
 ```
 
 ## Counts

@@ -633,11 +633,11 @@ penguins %>%
   summarize(mean_weight=mean(body_mass_g))
 ```
 
-If interested in the number of observations (penguins) by species and island?
+If interested in the number of observations (penguins) by species and island. 
 ```{r}
 penguins %>% 
-  group_by(species, island) %>% 
-  summarize(n=n(), .groups= 'keep')#the .groups argument here just prevents a warning message
+  group_by(species, island) %>% # Group by species and island, and get number of species by those. 
+  summarize(number_of_penguins=n(), .groups= 'keep')#the .groups argument here just prevents a warning message
 ```
 
 ## Counts
