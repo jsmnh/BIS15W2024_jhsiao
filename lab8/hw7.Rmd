@@ -69,22 +69,27 @@ amphibio %>%
 
 **5. Make any necessary replacements in the data such that all NA's appear as "NA".**   
 ```{r}
-
+amniota_no_nas <- amniota %>% 
+  replace_with_na_all(condition = ~.x %in% c(common_na_strings, common_na_numbers)) 
 ```
 
 **6. Use the package `naniar` to produce a summary, including percentages, of missing data in each column for the `amniota` data.**  
 ```{r}
-
+miss_var_summary(amniota_no_nas)
 ```
 
 **7. Use the package `naniar` to produce a summary, including percentages, of missing data in each column for the `amphibio` data.**
 ```{r}
-
+miss_var_summary(amphibio)
 ```
 
 **8. For the `amniota` data, calculate the number of NAs in the `egg_mass_g` column sorted by taxonomic class; i.e. how many NA's are present in the `egg_mass_g` column in birds, mammals, and reptiles? Does this results make sense biologically? How do these results affect your interpretation of NA's?**  
+*It makes sense that percent missing for mammals is zero because mammals don't lay eggs. For birds, 50% missing could make sense. However, repitles with 92% missing doesn't really make sense as they lay eggs too.*
 ```{r}
-
+amniota_no_nas %>% 
+  group_by(class) %>% 
+  select(class, egg_mass_g) %>% 
+  miss_var_summary(class=T)
 ```
 
 **9. The `amphibio` data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA's in each of these variables. Do you think that the authors intend us to think that there are NA's in these columns or could they represent something else? Explain.**

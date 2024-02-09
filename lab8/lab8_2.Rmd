@@ -58,9 +58,13 @@ life_history %>%
 ## Practice
 1. Can we use a single approach to deal with NA's in this data set? Given what you learned in the previous lab, how would you manage the NA values?
 ```{r}
-life_history <- read_csv("data/mammal_lifehistories_v3.csv", na=c("NA", " ", ".", "-999", "not measured")) %>% clean_names()
+life_history_no_nas <- read_csv(file = "data/mammal_lifehistories_v3.csv", na = c("NA", " ", ".", "-999")) %>% clean_names() 
 # You need to know how the NA's are represented in the data
-# You don't want to do this by default
+#  Notice that I am creating a new object/ dataframe that doesn't have any NA's
+```
+Recheck
+```{r}
+life_history_no_nas %>% map_df(~ sum(is.na(.))) # we fixed most of the problems
 ```
 
 ## `naniar`
@@ -68,36 +72,36 @@ life_history <- read_csv("data/mammal_lifehistories_v3.csv", na=c("NA", " ", "."
 
 `miss_var_summary` provides a clean summary of NA's across the data frame.
 ```{r}
-naniar::miss_var_summary(life_history)
+naniar::miss_var_summary(life_history_no_nas)
 ```
 
 Notice that `max_life` has no NA's. Does that make sense in the context of this data?
 ```{r}
-hist(life_history$max_life)
+hist(life_history_no_nas$max_life) # we found another way NA's are represented
 ```
 
 Let's use `mutate()` and `na_if()` to replace 0's with NA's in `max_life`.
 ```{r}
-life_history <- 
-  life_history %>% 
+life_history_no_nas <- 
+  life_history_no_nas %>% 
   mutate(max_life=na_if(max_life, 0))
 ```
 
 ```{r}
-miss_var_summary(life_history)
+miss_var_summary(life_history_no_nas)
 ```
 
 We can also use `miss_var_summary` with `group_by()`. This helps us better evaluate where NA's are in the data.
 ```{r}
-life_history %>%
+life_history_no_nas %>%
   group_by(order) %>%
-  select(order, wean_mass) %>% 
+  select(order) %>% 
   miss_var_summary(order=T)
 ```
 
 `naniar` also has a nice replace function which will allow you to precisely control which values you want replaced with NA's in each variable.
 ```{r}
-life_history %>% 
+life_history %>% # going back to original data
   replace_with_na(replace = list(newborn = "not measured", 
                                  weaning= -999, 
                                  wean_mass= -999, 
@@ -109,6 +113,27 @@ life_history %>%
 miss_var_summary()
 
 # Makes replacement of NA's very specific
+```
+You can also use naniar to replace a specific value (like -999) with NA across the entire data set.  
+```{r}
+life_history %>% #going back to the original data
+  replace_with_na_all(condition = ~.x == -999)%>% 
+miss_var_summary()
+```
+
+Finally, naniar has some built-in examples of common values or character strings used to represent NA's. The chunk below will use these built-in parameters to replace NA's across the entire data set.
+```{r}
+common_na_strings
+```
+
+```{r}
+common_na_numbers
+```
+
+```{r}
+life_history %>% #going back to the original data
+  replace_with_na_all(condition = ~.x %in% c(common_na_strings, common_na_numbers)) %>% 
+  mutate(newborn=na_if(newborn, "not measured"))
 ```
 
 ## Practice
@@ -133,7 +158,7 @@ cites %>%
   select(class, exporter_reported_quantity) %>% 
   group_by(class) %>%
   miss_var_summary() %>% 
-  arrange(desc(pct_miss))
+  arrange(desc(n_miss))
 ```
 
 ## Visualizing NAs
