@@ -1,7 +1,7 @@
 ---
 title: "Homework 8"
 author: "Jasmine Hsiao"
-date: "2024-02-13"
+date: "2024-02-15"
 output:
   html_document: 
     theme: spacelab
@@ -58,7 +58,7 @@ library(here)
 ```
 
 ```
-## here() starts at /Users/jhhh64/Desktop/BIS15W2024_jhsiao
+## here() starts at /Users/jasminehsiao/Desktop/BIS15W2024_jhsiao
 ```
 
 The quotes show the folder structure from the root directory.
@@ -177,6 +177,7 @@ new_sydneybeaches_long %>%
 ```
 
 10. Please complete the class project survey at: [BIS 15L Group Project](https://forms.gle/H2j69Z3ZtbLH3efW6)
+*My groupmates are Amy Zhang and Amanda Duong, and we have decided to focus on marine biology*
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
