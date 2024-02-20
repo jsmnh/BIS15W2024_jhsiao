@@ -5,6 +5,9 @@ _Instructor_: [Dr. Joel Ledford](mailto:jmledford@ucdavis.edu)
 
 _Graduate TA_: [Bry Moore](mailto:brymoore@ucdavis.edu)
 
+## Homework
+My homework is stored in each lab folder. 
+
 ## About me
 **Contact info:** [Jasmine Hsiao](mailto:hsyhsiao@ucdavis.edu)  
 **Major:** Biotechnology - Bioinformatics
