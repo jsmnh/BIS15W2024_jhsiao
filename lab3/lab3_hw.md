@@ -1,11 +1,11 @@
 ---
 title: "Lab 3 Homework"
 author: Jasmine Hsiao
-date: "2024-01-22"
+date: "2024-02-20"
 output:
   html_document: 
     theme: spacelab
-    keep_md: true
+    keep_md: yes
 ---
 
 ## Instructions
