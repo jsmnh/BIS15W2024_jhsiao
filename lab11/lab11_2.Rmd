@@ -141,12 +141,12 @@ penguins %>%
 2. Make another bar plot that shows the number of individuals by sex on each island?
 ```{r}
 penguins %>% 
-  filter(sex != "NA") %>%  # filter by sex
+  #filter(sex != "NA") %>%  # filter by sex
   ggplot(aes(x=island, fill=sex))+
   geom_bar(position="dodge")+
   labs(title="Counts of Individuals by Island",
       x = "Island",
-      fill = "Species")
+      fill = "Penguin Species")
   
 ```
 
