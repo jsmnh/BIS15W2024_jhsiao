@@ -201,15 +201,18 @@ summary(homerange$log10.mass)
 homerange %>% 
   mutate(mass_category=case_when(log10.mass<=1.75 ~ "small",
                                  log10.mass>1.75 & log10.mass <= 2.75 ~ "medium",
-                                 log10.mass>2.75 ~ "large")) %>% 
-  ggplot(aes(x=mass_category, fill=trophic.guild))+
-  geom_bar(position="dodge")
+                                 log10.mass>2.75 ~ "large")) 
 ```
 
 
 Here we check how the newly created body mass categories compare across `trophic.guild`. 
 ```{r}
-
+homerange %>% 
+  mutate(mass_category=case_when(log10.mass<=1.75 ~ "small",
+                                 log10.mass>1.75 & log10.mass <= 2.75 ~ "medium",
+                                 log10.mass>2.75 ~ "large")) %>% 
+  ggplot(aes(x=mass_category, fill=trophic.guild))+
+  geom_bar(position="dodge")
 ```
 
 ## Practice
@@ -222,6 +225,7 @@ summary(homerange$log10.hra)
 library(gtools)
 #install.packages("gtools")
 ```
+
 ```{r}
 quartiles <- quantcut(homerange$log10.hra)
 table(quartiles)
