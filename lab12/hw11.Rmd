@@ -122,32 +122,55 @@ gapminder %>%
 ```
 
 **7. Which countries have had the largest population growth since 1952?**
-*Since 1952, China and India have the largest population growth.*
 ```{r}
 gapminder %>% 
-  filter(year==1952) %>% 
-  arrange(desc(pop))
-```
-
-```{r}
-gapminder %>% 
-  filter(year==2007) %>% 
-  arrange(desc(pop))
+  mutate(year=as.factor(year)) %>%
+  filter(year==1952 | year==2007) %>% 
+  select(country, year, pop) %>% 
+  pivot_wider(names_from = "year", 
+              values_from = "pop",
+              names_prefix = "pop_") %>% 
+  mutate(pop_growth = pop_2007-pop_1952) %>% 
+  arrange(desc(pop_growth)) %>% 
+  head(n=5)
 ```
 
 **8. Use your results from the question above to plot population growth for the top five countries since 1952.**
 ```{r}
 gapminder %>% 
   mutate(year=as.factor(year)) %>%
-  ggplot(aes(x=year, y=pop))+
+  filter(country == "China" | country == "India" | country == "United States" | country == "Indonesia" | country == "Brazil") %>% 
+  ggplot(aes(x=year, y=pop, color = country))+
   geom_point(na.rm = T)+
-  geom_smooth(method=lm, se = T)
+  geom_smooth(method=lm, se = F)+
+  labs(title="Population Growth Since 1952 for Top 5 Countries")+
+  theme(plot.title=element_text(size=rel(1), hjust = 0.5))
 ```
 
 
 **9. How does per capita GDP growth compare between these same five countries?**
+```{r}
+gapminder %>% 
+  mutate(year=as.factor(year)) %>%
+  filter(country == "China" | country == "India" | country == "United States" | country == "Indonesia" | country == "Brazil") %>% 
+  ggplot(aes(x=year, y=gdpPercap, color = country))+
+  geom_point(na.rm = T)+
+  geom_smooth(method=lm, se = F)+
+  labs(title="Per Capita GDP Growth for Top 5 Countries")+
+  theme(plot.title=element_text(size=rel(1), hjust = 0.5))
+```
 
 **10. Make one plot of your choice that uses faceting!**
+```{r}
+gapminder %>% 
+  mutate(year=as.factor(year)) %>%
+  filter(continent=="Oceania") %>% 
+  ggplot(aes(x=year, y=pop))+
+  geom_boxplot()+
+  facet_grid(country~.)+
+  labs(title = "Population Between 1952-2007 for Oceania Countries")+
+  theme(plot.title=element_text(size=rel(1), hjust = 0.5))
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
