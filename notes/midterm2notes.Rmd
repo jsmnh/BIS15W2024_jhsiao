@@ -178,6 +178,7 @@ common_na_strings
 common_na_numbers
 ```
 
+Single way to deal with all NA's
 ```{r}
 life_history %>% #going back to the original data
   replace_with_na_all(condition = ~.x %in% c(common_na_strings, common_na_numbers)) %>% 
