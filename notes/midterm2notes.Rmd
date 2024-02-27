@@ -1,0 +1,212 @@
+---
+title: "Midterm 2 Notes"
+author: "Jasmine Hsiao"
+date: "2024-02-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Lab 8.1-Midterm Review and `across()`
+
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("skimr")
+library("janitor")
+library("palmerpenguins")
+```
+
+## Penguins
+Recall that: group_by() and summarize() work great together.
+```{r}
+penguins %>% 
+  group_by(island) %>% 
+  summarize(mean_body_mass_g=mean(body_mass_g, na.rm=T)) # remember to remove those NA's!
+```
+
+What if we are interested in the number of observations (penguins) by species and island?
+```{r}
+penguins %>% 
+  group_by(island, species) %>% 
+  summarize(n_penguins=n(), .groups = 'keep')
+```
+
+Recall that that `count()` works like a combination of `group_by()` and `summarize()` but just shows the number of observations.
+```{r}
+penguins %>% 
+  count(island, species)
+```
+
+`tabyl()` will also produce counts, but the output is different. It is just a matter of personal preference.
+```{r}
+penguins %>% 
+  tabyl(island, species)  # tabyl is part of the janitor package
+```
+
+## `across()`
+Across allows us to use`filter()` and `select()` across multiple variables. 
+
+Here we are summarizing the mean of all variables that contain "mm".
+```{r}
+penguins %>%
+  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+`group_by` also works.
+```{r}
+penguins %>%
+  group_by(sex) %>% 
+  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+Here we summarize across all variables.
+```{r}
+penguins %>%
+  summarise_all(n_distinct)
+```
+
+Operators can also work, here I am summarizing `n_distinct()` across all variables except `species`, `island`, and `sex`.
+```{r}
+penguins %>%
+  summarize(across(!c(species, island, sex, year), 
+                   mean, na.rm=T))
+```
+
+All variables that include "bill"...all of the other dplyr operators also work.
+```{r}
+penguins %>%
+  summarise(across(starts_with("bill"), n_distinct))
+```
+
+# Lab 8.2-Fun with NA's
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("naniar")
+library("skimr")
+library("janitor")
+```
+
+## Load the mammals life history data and clean the names  
+```{r}
+life_history <- read_csv("data_midterm2/mammal_lifehistories_v3.csv") %>% clean_names()
+```
+
+## Are there any NA's?
+```{r}
+glimpse(life_history)
+```
+
+```{r}
+summary(life_history)
+```
+
+New from the `purrr` package. Gives quick summary of number of NA's in each variable
+```{r}
+life_history %>% 
+  map_df(~ sum(is.na(.))) # It's telling you theres no NA because it read -999 as a number not NA
+```
+
+## `naniar`: package built to manage NA's
+A single approach to deal with NA's in this data set
+```{r}
+life_history_no_nas <- 
+  read_csv(file = "data_midterm2/mammal_lifehistories_v3.csv", na = c("NA", " ", ".", "-999")) %>% clean_names() # notice that I am creating a new object/ dataframe that doesn't have any NA's
+```
+
+
+`miss_var_summary` provides a clean summary of NA's across the data frame.
+```{r}
+naniar::miss_var_summary(life_history_no_nas)
+```
+
+Notice that `max_life` has no NA's. Does that make sense in the context of this data? (no)
+```{r}
+hist(life_history_no_nas$max_life) # we found another way NA's are represented 
+```
+
+Let's use `mutate()` and `na_if()` to replace 0's with NA's in `max_life`.
+```{r}
+life_history_no_nas <- 
+  life_history_no_nas %>% 
+  mutate(max_life=na_if(max_life, 0))
+```
+
+```{r}
+miss_var_summary(life_history_no_nas)
+```
+
+We can also use `miss_var_summary` with `group_by()`. This helps us better evaluate where NA's are in the data.
+```{r}
+life_history_no_nas %>%
+  group_by(order) %>%
+  select(order) %>% 
+  miss_var_summary(order=T)
+```
+
+`naniar` also has a nice replace function which will allow you to precisely control which values you want replaced with NA's in each variable.
+```{r}
+life_history %>% # going back to original data
+  replace_with_na(replace = list(newborn = "not measured", 
+                                 weaning= -999, 
+                                 wean_mass= -999, 
+                                 afr= -999, 
+                                 max_life= 0, 
+                                 litter_size= -999, 
+                                 gestation= -999, 
+                                 mass= -999)) %>% 
+miss_var_summary()
+
+# Makes replacement of NA's very specific
+```
+
+You can also use naniar to replace a specific value (like -999) with NA across the entire data set.  
+```{r}
+life_history %>% #going back to the original data
+  replace_with_na_all(condition = ~.x == -999)%>% 
+miss_var_summary()
+```
+
+Finally, naniar has some built-in examples of common values or character strings used to represent NA's. The chunk below will use these built-in parameters to replace NA's across the entire data set.
+```{r}
+common_na_strings
+```
+
+```{r}
+common_na_numbers
+```
+
+```{r}
+life_history %>% #going back to the original data
+  replace_with_na_all(condition = ~.x %in% c(common_na_strings, common_na_numbers)) %>% 
+  mutate(newborn=na_if(newborn, "not measured"))
+```
+
+## Visualizing NAs
+There is another package `visdat` that can be used to visualize the proportion of different classes of data, including missing data. But, it is limited by size.
+```{r}
+library(visdat)
+```
+
+```{r}
+vis_dat(life_history) #classes of data
+```
+
+```{r}
+vis_miss(life_history)
+```
+
+## Dealing with NA's in advance
+If you are sure that you know how NA's are treated in the data, then you can deal with them in advance using `na()` as part of the `readr` package.
+```{r}
+life_history_advance <- 
+  readr::read_csv(file = "data_midterm2/mammal_lifehistories_v3.csv", 
+                  na = c("NA", " ", ".", "-999")) #all NA, blank spaces, .,and -999 are treated as NA
+```
+
+```{r}
+miss_var_summary(life_history_advance)
+```
