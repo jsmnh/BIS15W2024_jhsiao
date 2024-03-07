@@ -1,0 +1,225 @@
+---
+title: "BIS15L_AI_class"
+author: "Jasmine Hsiao"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+Today, we're exploring how AI can aid in writing, comprehending and troubleshooting our R code. AI is a very valuable tool, but it's important not to rely on it entirely. Building a strong R foundation is still important. These AI tools are not perfect and can be inaccurate solutions. In addition these tools can't read our minds, so understanding R helps us generate better prompts to get better responses. In short, AI should be used as a tool, not a crutch. Additionally, do not forget about other useful resources like Stack Overflow/Exchange, online tutorials, and GitHub issues pages for learning and troubleshooting. Let's combine AI with traditional methods to master R effectively.
+
+This overview isn't exhaustive of all possible AI tools for R coding, but I believe it is a good start and covers everything you need.
+
+
+**Make sure to enable Github Copilot in RStudio.**
+Go to Tools -> Global Options -> Copilot -> Enable Git
+
+## Learning Goals: 
+*At the end of this exercise, you will be able to:*  
+1. Explain what AI is and what AI tools can be used for R.
+2. Enable Github Copilot in RStudio.
+3. Use Copilot/ChatGPT to write code in RStudio.
+4. Use Copilot/ChatGPT for troubleshooting code in RStudio.
+
+
+## Exploration Questions:
+Lets get some get a feel for what copilot (or ChatGPT) does, use Github Copilot to autocomplete the questions below. You can alternatively paste the questions in ChatGPT or Microsoft Copilot.
+1. What is AI?
+Artificial Intelligence (AI) is like teaching computers to do tasks that typically need human intelligence, such as learning, solving problems, understanding language, and recognizing things like images or speech. There are two main types: Narrow AI does specific tasks well, like recognizing faces. General AI, which doesn't exist yet, would be super smart like humans and do all kinds of things.
+
+People use AI in many areas like healthcare, finance, and more. Machine learning is a part of AI that helps computers learn from data, and deep learning is a fancy version of that. AI is powerful, but there are also discussions about its impact on society, ethics, and rules to guide its use.
+
+2. What is ChatGPT?
+ChatGPT is like a smart computer buddy for chatting. It talks with you in a natural way, understanding what you say and responding in a human-like manner. It learned a lot from the internet, so it can chat about a bunch of things. Keep in mind, though, it doesn't know real-time info, and it's not perfect. It's here to help and chat, but it's good to double-check important stuff.
+
+3. What is Github Copilot?
+GitHub Copilot is a code completion tool developed by GitHub in collaboration with OpenAI. It's designed to assist programmers by providing code suggestions as they write in various programming languages. Copilot analyzes the code you're working on and suggests whole lines or blocks of code based on the context.
+
+The tool is powered by OpenAI's Codex, which is a language model like GPT-3 but fine-tuned for coding tasks. Copilot aims to speed up the coding process, reduce repetitive tasks, and help developers write code more efficiently. It supports a wide range of programming languages and can be used within popular code editors, integrating seamlessly into the developer's workflow.
+
+Keep in mind that while GitHub Copilot is a powerful tool, it may not always produce flawless or secure code, and developers should review and test the suggestions to ensure they meet their project's requirements and standards.
+
+4. What can you do with AI in coding?
+AI in coding acts like a helpful assistant for programmers. It speeds up the coding process by suggesting what to write next, finds and fixes mistakes, and gives quick summaries of code. You can ask it questions in everyday language, and it helps with testing and improving your code. It predicts potential issues, personalizes learning to your skill level, and assists in writing explanations for your code. It's like a smart sidekick that makes coding faster, more efficient, and accessible, allowing developers to focus on the creative aspects of their work.
+
+
+## Load the libraries  
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(shiny)
+library(shinydashboard)
+```
+
+## Load the Data: 
+```{r}
+#load the Netflix Data in your Data folder, save it under the object name netflix
+netflix <- read_csv("Data/netflix_titles.csv")
+
+```
+
+*Did copilot help you write the code above? Could anything about the prompt be improved to help Copilot understand what you want to do more accurately?*
+
+
+## Lets Practice:
+Explore the elements in your data: include a comment within your code chunk to prompt Copilot to use the function of your choice
+```{r}
+head(netflix)
+```
+*Did copilot use your preferred method to get the summary of the data? If not, how could you improve the prompt to get the desired output?*
+
+Use names to get the column names of the netflix data
+```{r}
+names(netflix)
+```
+
+
+Sort out the movies from the netflix into an new object called netflix_movies
+```{r} 
+netflix_movies <- filter(netflix, type == "Movie")
+```
+
+
+Which director has the most movies on netflix? Removes NA
+```{r}
+filter(count(netflix_movies, director, sort =T), !is.na(director))
+
+```
+*Do you see anything wrong with the table above, look at row 1. Write a prompt below to fix this.*
+
+Separate the directors
+```{r}
+netflix_movies %>%
+  separate_rows(director, sep = ", ") %>% 
+  filter(!is.na(director))
+```
+
+
+
+Which director had the most movies by release year and remove the NA's?
+```{r}
+
+netflix_movies %>%
+  filter(!is.na(director)) %>%
+  group_by(release_year, director) %>%
+  summarise(movie_count = n()) %>%
+  arrange(desc(movie_count)) %>%
+  slice(1) 
+```
+*See anything else interesting about this table, look at the first director on the table. Could this be a problem and how can we edit the dataset to fix this? Try writing a prompt.*
+
+
+Remove the Nas 
+```{r}
+
+```
+
+
+
+Make a bar plot of the top directors with the most movies on netflix
+```{r}
+netflix_movies %>%
+  filter(!is.na(director)) %>%
+  group_by(director) %>%
+  summarise(movie_count = n()) %>%
+  arrange(desc(movie_count)) %>%
+  head(10) %>%
+  
+  ggplot(aes(x = reorder(director, -movie_count), y = movie_count)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+  labs(title = "Top 10 Directors with Most Movies on Netflix",
+       x = "Director",
+       y = "Number of Movies") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+*Do you see any issues with this plot? How could we improve the prompt to get a better boxplot? Try writing a prompt.*
+
+[Insert your prompt here]
+```{r}
+netflix_movies %>%
+  filter(!is.na(director)) %>%
+  group_by(director) %>%
+  summarise(movie_count = n()) %>%
+  arrange(desc(movie_count)) %>%
+  head(10) %>%
+  
+  ggplot(aes(x = reorder(director, -movie_count), y = movie_count, fill = director)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(title = "Top 10 Directors with Most Movies on Netflix",
+       x = "Director",
+       y = "Number of Movies") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_viridis_d()  # You can choose a different color palette here
+```
+
+*How about for just 2020*
+[Insert your prompt here]
+```{r}
+netflix_movies %>%
+  filter(!is.na(director), release_year == 2020) %>%
+  group_by(director) %>%
+  summarise(movie_count = n()) %>%
+  arrange(desc(movie_count)) %>%
+  head(10) %>%
+  
+  ggplot(aes(x = reorder(director, -movie_count), y = movie_count, fill = director)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(title = "Top 10 Directors with Most Movies on Netflix in 2020",
+       x = "Director",
+       y = "Number of Movies") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_viridis_d()  # You can choose a different color palette here
+```
+
+
+*Take a few minutes to make your own plot(s) using prompts, edit prompts until you get a plot that you like.*
+
+
+
+
+
+
+## Lets make the top 10 directors barplot into a Shiny App: use copilot or Chatgpt
+```{r}
+ui <- fluidPage(
+  titlePanel("Top 10 Directors with Most Movies on Netflix"),
+  mainPanel(
+    plotOutput("barPlot")
+  )
+)
+
+server <- function(input, output) {
+  
+  output$barPlot <- renderPlot({
+    top_directors <- netflix_movies %>%
+      filter(!is.na(director)) %>%
+      group_by(director) %>%
+      summarise(movie_count = n()) %>%
+      arrange(desc(movie_count)) %>%
+      head(10)
+    
+    ggplot(top_directors, aes(x = reorder(director, -movie_count), y = movie_count, fill = director)) +
+      geom_bar(stat = "identity", color = "black") +
+      labs(x = "Director", y = "Number of Movies") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      scale_fill_viridis_d()
+  })
+}
+
+shinyApp(ui, server)
+```
+
+
+*Now use ChatGPT, Copilot or previous notes to fix the code*
+
+
+
+
+
+## That's it! Let's take a break and then move on to working on group projects.
