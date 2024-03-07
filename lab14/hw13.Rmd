@@ -1,6 +1,6 @@
 ---
 title: "Homework 13"
-author: "Please Add Your Name Here"
+author: "Jasmine Hsiao"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -32,13 +32,106 @@ UC_admit <- read_csv("data/UC_admit.csv")
 ```
 
 **1. Use the function(s) of your choice to get an idea of the overall structure of the data frame, including its dimensions, column names, variable classes, etc. As part of this, determine if there are NA's and how they are treated.**  
+```{r}
+glimpse(UC_admit)
+```
+```{r}
+library("naniar")
+miss_var_summary(UC_admit)
+```
 
 
 **2. The president of UC has asked you to build a shiny app that shows admissions by ethnicity across all UC campuses. Your app should allow users to explore year, campus, and admit category as interactive variables. Use shiny dashboard and try to incorporate the aesthetics you have learned in ggplot to make the app neat and clean.**  
+```{r, eval=F, echo=T}
+ui <- dashboardPage(
+  
+  dashboardHeader(title = "Admissions by Ethinicity Across UC Campuses"),
+  
+  dashboardSidebar(disable=T),
+  
+  dashboardBody(
+  fluidRow(
+  box(title = "Plot Options", width = 2, #can control size of boxes
+    
+    selectInput("x", "Select Year", choices = c("2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"), selected = "2010"),
+  
+    selectInput("y", "Select Campus", choices = c("Berkeley", "Davis", "Irvine", "Los_Angeles", "Merced", "Riverside", "San_Diego", "Santa_Barbara", "Santa_Cruz"), selected = "Berkeley"),
+
+    radioButtons("z", "Select Category", choices = c("Admits", "Applicants", "Enrollees"), selected = "Admits"),
+
+    ), # close the first box    
+
+box(title = "Plot of UC Admission Data", width = 9,
+  plotOutput("plot", width = "800px", height = "600px")
+) # close the second box
+) # close the row
+) # close the dashboard body
+) # close the ui
+
+server <- function(input, output, session) {
+  
+  session$onSessionEnded(stopApp) #automatically stop the app when close it
+  
+  output$plot <- renderPlot({
+    UC_admit %>% 
+      filter(Academic_Yr==input$x & Campus==input$y & Category==input$z) %>% 
+      ggplot(aes(x=reorder(Ethnicity, FilteredCountFR), y=FilteredCountFR))+
+      geom_col(fill="pink2", alpha=0.6, color="grey20")+
+      theme_light()+
+      labs(x="Ethnicity",
+           y="Count")
+    })
+}
+
+shinyApp(ui, server)
+```
 
 
 **3. Make alternate version of your app above by tracking enrollment at a campus over all of the represented years while allowing users to interact with campus, category, and ethnicity.**
+```{r, eval=F, echo=T}
+ui <- dashboardPage(
+  
+  dashboardHeader(title = "Admissions Across UC Campuses 2010-2019"),
+  
+  dashboardSidebar(disable=T),
+  
+  dashboardBody(
+  fluidRow(
+  box(title = "Plot Options", width = 3, #can control size of boxes
+  
+    selectInput("x", "Select Campus", choices = c("Berkeley", "Davis", "Irvine", "Los_Angeles", "Merced", "Riverside", "San_Diego", "Santa_Barbara", "Santa_Cruz"), selected = "Berkeley"),
 
+    radioButtons("y", "Select Category", choices = c("Admits", "Applicants", "Enrollees"), selected = "Admits"),
+    
+    selectInput("z", "Select Ethnicity", choices = c("African American", "All", "American Indian", "Asian", "Chicano/Latino", "International", "Unknown", "White"), selected = "African American"),
+
+    ), # close the first box    
+
+box(title = "Plot of UC Admission Data", width = 9,
+  plotOutput("plot", width = "800px", height = "600px")
+) # close the second box
+) # close the row
+) # close the dashboard body
+) # close the ui
+
+server <- function(input, output, session) {
+  
+  session$onSessionEnded(stopApp) #automatically stop the app when close it
+  
+  output$plot <- renderPlot({
+    UC_admit %>% 
+      mutate(Academic_Yr=as.factor(Academic_Yr)) %>% 
+      filter(Campus==input$x & Category==input$y & Ethnicity==input$z) %>% 
+      ggplot(aes(x=Academic_Yr, y=FilteredCountFR))+
+      geom_col(fill="royalblue", alpha=0.6, color="grey20")+
+      theme_light()+
+      labs(x="Year",
+           y="Count")
+    })
+}
+
+shinyApp(ui, server)
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
