@@ -1,6 +1,6 @@
 ---
 title: "BIS15L_AI_hmwk"
-author: "Your Name"
+author: "Jasmine Hsiao"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -26,22 +26,24 @@ library(dplyr)
 
 1.
 ```{r}
-blood_count <- read_csv("data/blood_count.csv")
+blood_count <- read_csv("data/blood_count_dataset.csv") %>%  clean_names() #Added "_dataset" and cleaned column names
 ```
 
 2. 
 ```{r}
-glmpse(blood_count)
+glimpse(blood_count) #Spelled glimpse correctly
 
 ```
 
 3. 
 ```{r}
-blood_count %>% 
-  group_by(gender) %>% 
-  summarize(min=min(red_blood_cells)
-            mean=maen(red_blood_cells),
-            max=max(red_blood_cells)
+blood_count %>%
+  group_by(gender) %>%
+  summarize(
+    min = min(red_blood_cells),
+    mean = mean(red_blood_cells), #Changed spelling of mean to correct
+    max = max(red_blood_cells)
+  )
 ```
 
 
@@ -50,17 +52,17 @@ blood_count %>%
 options(scipen = 999, digits = 2)
 
 blood_count %>% 
-  filter(Gender = "male") %>%
-  select[3:9] %>%
+  filter(gender == "Male") %>% # Capitalized M
+  select(3:9) %>% # Changed brackets to parenthesis 
   colMeans(na.rm = TRUE)
 
 ```
 
 5. 
 ```{r}
-bloood_count %>% 
-  filter(Gender = "Female") />%
-  select[3:9] %>%
+blood_count %>% 
+  filter(gender == "Female") %>% 
+  select(3:9) %>% # Changed brackets to parenthesis 
   colMeans(na.rm = T)
 ```
 
@@ -69,10 +71,10 @@ bloood_count %>%
 ```{r}
 
 blood_count %>%
-  pivot_wider(cols = [3:9], names_to = "Test", values_to = "Values") %>%
-  ggplot(aes(x = Gender, y = Values, fill = Gender)) +
+  pivot_longer(cols = 3:9, names_to = "Test", values_to = "Values") %>% #removed brackets
+  ggplot(aes(x = gender, y = Values, fill = gender)) + #lower case "g"
   geom_boxplot() +
-  facet(~ Test, scales = "free") 
+  facet_wrap(~ Test, scales = "free")+ #Added "wrap"
   labs(title = "Boxplot of Blood Count Tests",
        x = "Test",
        y = "Values")
@@ -82,33 +84,40 @@ blood_count %>%
 7. 
 ```{r}
 grouped_bc <- blood_count %>%
-  change(Age_Group = case_when(
-    Age >= 20 & Age <= 29 ~ "20s",
-    Age >= 30 & Age <= 39 ~ "30s",
-    Age >= 40 & Age <= 49 ~ "40s",
-    Age >= 50 & Age <= 59 ~ "50s",
-    Age >= 60 & Age <= 70 ~ "60s")) # there were only 4 people in 70s, so I combined it with 60s
-
+  mutate(Age_Group = case_when( #Change to mutate, age to lower case
+    age >= 20 & age <= 29 ~ "20s",
+    age >= 30 & age <= 39 ~ "30s",
+    age >= 40 & age <= 49 ~ "40s",
+    age >= 50 & age <= 59 ~ "50s",
+    age >= 60 & age <= 70 ~ "60s")) # there were only 4 people in 70s, so I combined it with 60s
+  
 head(grouped_bc)
 
 ```
 
 8. 
 ```{r}
-blood_count %>%
+grouped_bc %>% #Changed to grouped_bc instead of blood_count
   pivot_longer(cols = 3:9, names_to = "Test", values_to = "Values") %>%
-  ggplot(ase(x = Age_Group, y = values, fill = Age_Group)) +
+  ggplot(aes(x = Age_Group, y = Values, fill = Age_Group)) +
   geom_boxplot() +
-  facet_wrap( Test, scales = "free") +  # Facet by the "Test" variable
+  facet_wrap(~ Test, scales = "free") +  # Facet by the "Test" variable # Added "~"
   labs(title = "Boxplot of Blood Count Tests by Age Group",
        x = "Age Group",
        y = "Values")
 
 ```
 9. What are two drawbacks and two benefits of AI?
+Drawbacks: 
+  1. AI would only know how to solve sometime if the developer has imputed data for it to do so. 
+  2. Chatgpt like many other AIs require us to use it over and over again to get the correct and desired output. We would have to "train" it. 
+
+Benefits:
+  1. AI can call out functions fast, whereas as students we may have to think for a bit or look in our notes to find the code we need (if we just started coding).
+  2. AI can give options we may not even know, such as even more ways to color or make a graph pretty etc. 
 
 10. Do you think you will use AI for coding in the future? Why or why not?
-
+I think I would probably, just because everyone is starting to use it now. And it is also very convenient and can be helpful when stuck on a code. I also think it is important for us to build our skills including use of AI as AI develops further. 
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
